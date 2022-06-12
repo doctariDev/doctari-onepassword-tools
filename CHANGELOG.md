@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.3.0 (2022-06-12)
+
+
+### Features
+
+* **actions:** added op-cli login action ([67da6dd](https://github.com/doctariDev/doctari-onepassword-tools/commit/67da6dd4f46482b59739dc5f228cfe1eb2ca8076))
+
 ## 1.2.0 (2022-06-12)
 
 
