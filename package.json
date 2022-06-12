@@ -6,6 +6,9 @@
   "repository": "git@github.com:doctariDev/doctari-onepassword-tools.git",
   "author": "Valeriu Chis <valeriu.chis@doctarigroup.com>",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "loadSecrets": "bin/load-secrets.js"
   },
