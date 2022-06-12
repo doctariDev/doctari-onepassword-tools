@@ -1,4 +1,4 @@
-name: "install-op-cli-action"
+name: "op-cli-install-action"
 description: "Install 1Password CLI on a linux host"
 inputs:
   version:

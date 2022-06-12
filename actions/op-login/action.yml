@@ -1,0 +1,28 @@
+name: "op-cli-login-action"
+description: "Configures account and signs in to 1Password"
+inputs:
+  username:
+    description: Account username
+    required: true
+  password:
+    description: Account password
+    required: true
+  secretKey:
+    description: Account secret key
+    required: true
+  address:
+    description: Account domain
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - id: login
+      run: |
+        echo "${{ inputs.password }}" | op account add \
+          --address "${{ inputs.domain }}" \
+          --email "${{ inputs.username }}" \
+          --secret-key "${{ inputs.secretKey }}"
+        eval $(echo "${{ inputs.password }}" | op signin)
+      shell: bash
+
