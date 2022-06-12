@@ -1,6 +1,6 @@
 {
   "name": "@doctarigroup/onepassword-tools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CLI Tools and Github Actions for 1password integrations",
   "main": "index.js",
   "repository": "git@github.com:doctariDev/doctari-onepassword-tools.git",
