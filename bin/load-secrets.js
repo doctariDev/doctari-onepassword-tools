@@ -25,9 +25,9 @@ async function main() {
         throw new Error('Usage: load-secrets <path-to-template>');
     }
 
-    console.log(`Environment: ${env}`);
-    console.log(`1password-cli version: ${opcli.version()}`);
-    console.log(`Input file: ${input}`);
+    console.error(`Environment: ${env}`);
+    console.error(`1password-cli version: ${opcli.version()}`);
+    console.error(`Input file: ${input}`);
 
     const template = JSON.parse(fs.readFileSync(input, {encoding: 'utf8'}));
     const processedLines = [];
@@ -44,8 +44,13 @@ async function main() {
 
     const out = opcli.inject.data(processedLines.join('\n'));
     console.log(out);
-
-    return 'Done';
 }
 
-main().then(console.log, (e) => console.error(e.message));
+main().then(
+    () => {
+        console.error('Done')
+    },
+    (e) => {
+        console.error(e.message)
+    }
+);

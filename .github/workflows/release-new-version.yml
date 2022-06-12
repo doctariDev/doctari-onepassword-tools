@@ -1,12 +1,11 @@
-name: Publish new version
+name: Release new version
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  releaseNewVersion:
-    name: 'Release new version'
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,45 +24,20 @@ jobs:
 
       - name: 'Prepare git'
         run: |
-          git config --global user.email "noreply@github.com"
-          git config --global user.name "github version update"
+          git config --global user.email "it@doctari.de"
+          git config --global user.name "ci user"
           git branch -u origin/main main
 
-      - name: 'Install project'
-        run: yarn install
-
-      - name: 'Increase version'
-        run: npx standard-version
-
-      - name: 'Push new version to git'
-        run: git push --follow-tags
-
-  publish:
-    name: 'Publish to NPM'
-    needs: releaseNewVersion
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: 'Use Node.js'
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-
-      - name: 'Prepare git'
-        run: git pull
-
-      - name: 'Setup cache for node_modules'
-        id: cache-node-modules
-        uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+      - name: 'Authenticate with GitHub package registry (publish)'
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.ACCESS_TOKEN_PUBLISH_GITHUB_PACKAGES }}" > ~/.npmrc
 
       - name: 'Install project'
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install
 
-      - name: 'Publish release to npm'
+      - name: 'Prepare release'
+        run: |
+          yarn release
+
+      - name: 'Publish release'
         uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
