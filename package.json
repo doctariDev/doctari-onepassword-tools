@@ -1,0 +1,19 @@
+{
+  "name": "@doctarigroup/onepassword-tools",
+  "version": "1.0.0",
+  "description": "CLI Tools and Github Actions for 1password integrations",
+  "main": "index.js",
+  "repository": "git@github.com:doctariDev/doctari-onepassword-tools.git",
+  "author": "Valeriu Chis <valeriu.chis@doctarigroup.com>",
+  "license": "MIT",
+  "bin": {
+    "loadSecrets": "bin/load-secrets.js"
+  },
+  "scripts": {
+    "release": "standard-version --tag-prefix --commit-all"
+  },
+  "devDependencies": {
+    "@1password/op-js": "^0.1.1",
+    "standard-version": "^9.5.0"
+  }
+}
