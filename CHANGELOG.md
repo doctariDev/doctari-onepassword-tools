@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.3.1 (2022-06-12)
+
+
+### Bug Fixes
+
+* **actions:** added device id ([9c192f5](https://github.com/doctariDev/doctari-onepassword-tools/commit/9c192f521af2ed3646d2738b7022d57e24f108aa))
+
 ## 1.3.0 (2022-06-12)
 
 
