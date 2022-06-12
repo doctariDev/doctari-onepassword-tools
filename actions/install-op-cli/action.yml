@@ -1,0 +1,28 @@
+name: "install-op-cli-action"
+description: "Install 1Password CLI on a linux host"
+inputs:
+  version:
+    description: "version of the CLI"
+    required: false
+    default: 2.4.1
+  arch:
+    description: Allowed values are - amd64, arm64
+    required: false
+    default: amd64
+outputs:
+  version:
+    description: "The 1Password CLI version that was installed"
+    value: ${{ steps.set-output.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: install-aws-cli
+      run: |
+        curl -sSfo /tmp/op.zip https://cache.agilebits.com/dist/1P/op2/pkg/v${{ inputs.version }}/op_linux_${{ inputs.arch }}_v${{ inputs.version }}.zip
+        sudo unzip -od /usr/local/bin/ /tmp/op.zip
+        rm /tmp/op.zip
+      shell: bash
+    - id: set-output
+      run: echo "::set-output name=version::$(op --version)"
+      shell: bash
