@@ -13,7 +13,10 @@ inputs:
   domain:
     description: Account domain
     required: true
-
+outputs:
+  sessionToken:
+    description: Session id returned by login
+    value: ${{ steps.login.outputs.token }}
 runs:
   using: "composite"
   steps:
@@ -24,6 +27,6 @@ runs:
           --address "${{ inputs.domain }}" \
           --email "${{ inputs.username }}" \
           --secret-key "${{ inputs.secretKey }}"
-        eval $(echo "${{ inputs.password }}" | op signin)
+        echo "::set-output name=token::$(echo "${{ inputs.password }}" | op signin)"
       shell: bash
 
