@@ -27,7 +27,7 @@ runs:
           --address "${{ inputs.domain }}" \
           --email "${{ inputs.username }}" \
           --secret-key "${{ inputs.secretKey }}"
-        tokenCmd=$(echo "${{ inputs.password }}" | op signin)
+        tokenCmd=$(echo "${{ inputs.password }}" | op signin --raw)
         echo "::add-mask::$tokenCmd"
         echo "::set-output name=token::$tokenCmd"
       shell: bash
