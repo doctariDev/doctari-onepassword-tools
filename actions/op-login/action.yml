@@ -19,6 +19,7 @@ runs:
   steps:
     - id: login
       run: |
+        export OP_DEVICE=iyr6wvn5qf63xquqf7howqlxsa
         echo "${{ inputs.password }}" | op account add \
           --address "${{ inputs.domain }}" \
           --email "${{ inputs.username }}" \
