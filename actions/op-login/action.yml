@@ -10,7 +10,7 @@ inputs:
   secretKey:
     description: Account secret key
     required: true
-  address:
+  domain:
     description: Account domain
     required: true
 
