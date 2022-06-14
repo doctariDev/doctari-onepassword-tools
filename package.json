@@ -14,6 +14,7 @@
     "load-secrets": "bin/load-secrets.js"
   },
   "scripts": {
+    "postinstall": "bin/install-op-cli.sh",
     "release": "standard-version --tag-prefix --commit-all && git push --follow-tags"
   },
   "devDependencies": {
