@@ -11,13 +11,15 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "bin": {
-    "loadSecrets": "bin/load-secrets.js"
+    "load-secrets": "bin/load-secrets.js"
   },
   "scripts": {
     "release": "standard-version --tag-prefix --commit-all && git push --follow-tags"
   },
   "devDependencies": {
-    "@1password/op-js": "^0.1.1",
     "standard-version": "^9.5.0"
+  },
+  "dependencies": {
+    "@1password/op-js": "^0.1.1"
   }
 }
