@@ -7,9 +7,6 @@ arch="$(node -e 'console.log(process.arch)')"
 platform="$(node -e 'console.log(process.platform)')"
 npm_root="$(npm root)"
 
-platform=linux
-arch=win32
-
 mkdir -p "$npm_root/.bin"
 
 function convertArch {
