@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.4.1 (2022-06-14)
+
+
+### Bug Fixes
+
+* **package:** postinstall workaround for yarn ([f509421](https://github.com/doctariDev/doctari-onepassword-tools/commit/f5094212cd1a76a4d0744e7b7828e1055bb7e804))
+
 ## 1.4.0 (2022-06-14)
 
 
