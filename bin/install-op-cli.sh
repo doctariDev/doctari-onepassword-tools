@@ -5,7 +5,7 @@ version="${OP_VERSION:-$default_version}"
 
 arch="$(node -e 'console.log(process.arch)')"
 platform="$(node -e 'console.log(process.platform)')"
-npm_root="$(npm root)"
+npm_root="$(npm root "$INIT_CWD")"
 
 mkdir -p "$npm_root/.bin"
 
