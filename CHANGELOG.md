@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.4.3 (2022-06-14)
+
+
+### Bug Fixes
+
+* **install:** download in correct root folder ([a1795ef](https://github.com/doctariDev/doctari-onepassword-tools/commit/a1795ef669e95a80b857e405c69a4f9b57b2c1c2))
+
 ### 1.4.2 (2022-06-14)
 
 
