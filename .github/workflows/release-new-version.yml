@@ -29,16 +29,15 @@ jobs:
           git config --global user.name "ci user"
           git branch -u origin/main main
 
+      - name: 'Authenticate with GitHub package registry (publish)'
+        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.ACCESS_TOKEN_PUBLISH_GITHUB_PACKAGES }}" > ~/.npmrc
+
       - name: 'Install project'
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install
 
       - name: 'Prepare release'
-        run: |
-          yarn release
+        run: yarn release
 
-      - name: 'Publish release'
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.ACCESS_TOKEN_PUBLISH_GITHUB_PACKAGES }}
-
+      - name: 'Publish to Github'
+        run: yarn publish

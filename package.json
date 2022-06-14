@@ -14,7 +14,7 @@
     "loadSecrets": "bin/load-secrets.js"
   },
   "scripts": {
-    "release": "standard-version --tag-prefix --commit-all"
+    "release": "standard-version --tag-prefix --commit-all && git push --follow-tags"
   },
   "devDependencies": {
     "@1password/op-js": "^0.1.1",
