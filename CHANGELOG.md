@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.4.6 (2022-07-25)
+
+
+### Bug Fixes
+
+* **op-cli:** implemented wrapper for op-cli executable so that --session flag is supported ([45bc377](https://github.com/doctariDev/doctari-onepassword-tools/commit/45bc377ae47f30de6aae67c6c444f1cb0a411517))
+
 ### 1.4.5 (2022-06-14)
 
 ### 1.4.4 (2022-06-14)
