@@ -11,7 +11,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "bin": {
-    "load-secrets": "bin/op-load-env.js"
+    "op-load-env": "bin/op-load-env.js"
   },
   "scripts": {
     "release": "standard-version --tag-prefix --commit-all && git push --follow-tags"
