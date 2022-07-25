@@ -8,10 +8,14 @@ const SKIPPED_DIRS = ['node_modules'];
 const TEMPLATE_NAME = 'env.template.json'
 const KEYWORDS = ['_refs'];
 
-function op(args, input) {
+function op(args, input, environment = null) {
     const config = input
         ? { stdio: 'pipe', input: Buffer.from(input) }
         : { stdio: ['inherit', 'pipe', 'pipe'] };
+
+    if (environment) {
+        config.env = environment;
+    }
 
     const {status, error, stdout, stderr} = child_process.spawnSync( "op", args, config);
 
@@ -86,51 +90,84 @@ function escapeValue(value) {
         .replace(/\t/g, "\\t")
         .replace(/\r/g, "\\r");
 
-    if (/[~`#$&*()\\|\[\]{};'<>/?! ]/.test(escaped) || escaped !== value) {
-        return `"${escaped.replace(/"/g, value)}"`;
+    if (/[~`#$&*()\\|\[\]{};'<>/?!" ]/.test(escaped) || escaped !== value) {
+        return `"${escaped.replace(/"/g, '\\"')}"`;
     }
 
     return value;
 }
 
 
-function getEnvContents(inputPath, env) {
+function getEnvContent(inputPath, env) {
     const template = JSON.parse(fs.readFileSync(inputPath, {encoding: 'utf8'}));
-    const processedLines = [];
+    let result = {};
+
+    if (Array.isArray(template['_refs'])) {
+        for (const ref of template['_refs']) {
+            const refPath = path.resolve(path.dirname(inputPath), ref);
+            result = {
+                ...result,
+                ...getEnvContent(refPath, env),
+            };
+        }
+    }
+
     for (const [key, value] of Object.entries(template)) {
         if (KEYWORDS.includes(key)) {
             continue;
         }
         if (typeof value === 'string') {
-            processedLines.push(`${key}=${escapeValue(envSubstitution(value))}`);
+            result[key] = envSubstitution(value);
             continue;
         }
         if (!value[env]) {
             throw new Error('Missing value for ${key}[${env}], please fix the template');
         }
-        processedLines.push(`${key}=${value[env]}`);
+        result[key] = envSubstitution(value[env]);
     }
 
-    if (Array.isArray(template['_refs'])) {
-        for (const ref of template['_refs']) {
-            const refPath = path.resolve(path.dirname(inputPath), ref);
-            processedLines.push(...getEnvContents(refPath, env));
-        }
-    }
-
-    processedLines.sort((a, b) => (a === b) ? 0 : (a < b ? -1 : 1));
-
-    return processedLines;
+    return result;
 }
+
+function envPrinter(prefix) {
+    const vars = Object.entries(process.env)
+        .filter(([k]) => k.startsWith(prefix))
+        .map(([k, v]) => ([k.slice(prefix.length), v]))
+        .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});
+    console.log(JSON.stringify(vars, null, '\t'))
+}
+
+function getPrefixedEnvironment(obj, prefix) {
+    return Object.entries(obj)
+        .filter(([_, v]) => String(v).indexOf('op://') >= 0)
+        .reduce((acc, [k, v]) => {
+            acc[`${prefix}${k}`] = v;
+            return acc;
+        }, {...process.env})
+}
+
 async function processTemplate(inputPath, env, token) {
     console.log(`[info] Processing template at ${inputPath} (${env})`);
-    const processedLines = getEnvContents(inputPath, env);
-    const content = processedLines.join('\n').trim();
-    if (!content.length) {
+
+    const content = getEnvContent(inputPath, env);
+    if (!Object.keys(content).length) {
         console.warn(`[warn] Empty template at ${inputPath}, skipping`);
         return '';
     }
-    return op(['inject', '--session', token], processedLines.join('\n'));
+
+    const prefix = 'OP_INJECT_'
+    const processedValues = JSON.parse(op([
+        'run', '--no-masking', '--session', token, '--',
+        'node', '-e', `(${envPrinter.toString()})('${prefix}');`
+    ], null, getPrefixedEnvironment(content, prefix)));
+
+    const output = [];
+    for (const [key, value] of Object.entries({ ...content, ...processedValues})) {
+        output.push(`${key}=${escapeValue(value)}`)
+    }
+
+    output.sort((a, b) => (a === b) ? 0 : (a < b ? -1 : 1));
+    return output.join('\n');
 }
 
 async function main() {
@@ -144,7 +181,7 @@ async function main() {
         throw new Error('Usage: load-secrets <path-to-template>');
     }
 
-    console.log(`[info] 1password-cli version: ${op(['--version']).trim()}`);
+    console.log(`[info] op-cli version: ${op(['--version']).trim()}`);
     const token = process.env.OP_SESSION_TOKEN || op(['signin', '--raw']);
 
     await loadEnvironment(folder, env, token);
