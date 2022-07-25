@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.6.0 (2022-07-25)
+
+
+### Features
+
+* **processor:** added support for references ([89d1cba](https://github.com/doctariDev/doctari-onepassword-tools/commit/89d1cba74b294321e4a2cdd49503277981ebffc8))
+
 ### 1.5.1 (2022-07-25)
 
 ## 1.5.0 (2022-07-25)
