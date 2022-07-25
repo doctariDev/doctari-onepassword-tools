@@ -17,7 +17,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: install-aws-cli
+    - id: install-op-cli
       run: |
         curl -sSfo /tmp/op.zip https://cache.agilebits.com/dist/1P/op2/pkg/v${{ inputs.version }}/op_linux_${{ inputs.arch }}_v${{ inputs.version }}.zip
         sudo unzip -od /usr/local/bin/ /tmp/op.zip

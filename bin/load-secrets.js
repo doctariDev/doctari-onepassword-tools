@@ -1,8 +1,29 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const child_process = require("child_process");
 
-const opcli = require('@1password/op-js');
+function op(args, input) {
+    const config = input
+        ? { stdio: 'pipe', input: Buffer.from(input) }
+        : { stdio: ['inherit', 'pipe', 'pipe'] };
+
+    const {status, error, stdout, stderr} = child_process.spawnSync( "op", args, config);
+
+    if (error) {
+        throw error;
+    }
+
+    if (stderr && stderr.length) {
+        throw new Error(stderr.toString('utf-8'));
+    }
+
+    if (status !== 0) {
+        throw new Error(`command exited with status ${status}`);
+    }
+
+    return stdout.toString('utf-8');
+}
 
 function envSubstitution(input) {
     for (const [key, value] of Object.entries(process.env)) {
@@ -14,6 +35,9 @@ function envSubstitution(input) {
 }
 
 async function main() {
+
+    const token = process.env.OP_SESSION_TOKEN || op(['signin', '--raw']);
+
     const env = process.env.ENV;
     const allowedEnvs = ['dev', 'stage', 'prod'];
     if (!allowedEnvs.includes(env)) {
@@ -26,7 +50,7 @@ async function main() {
     }
 
     console.error(`Environment: ${env}`);
-    console.error(`1password-cli version: ${opcli.version()}`);
+    console.error(`1password-cli version: ${op(['--version'])}`);
     console.error(`Input file: ${input}`);
 
     const template = JSON.parse(fs.readFileSync(input, {encoding: 'utf8'}));
@@ -42,7 +66,7 @@ async function main() {
         processedLines.push(`${key}=${value[env]}`);
     }
 
-    const out = opcli.inject.data(processedLines.join('\n'));
+    const out = op(['inject', '--session', token], processedLines.join('\n'));
     console.log(out);
 }
 
