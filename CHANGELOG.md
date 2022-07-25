@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.7.2 (2022-07-25)
+
+
+### Bug Fixes
+
+* **processor:** escaping replaced secrets ([6be6be0](https://github.com/doctariDev/doctari-onepassword-tools/commit/6be6be09b8f1ac5c43c69c6b8a165194ab25d20d))
+
 ### 1.7.1 (2022-07-25)
 
 
