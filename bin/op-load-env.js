@@ -86,7 +86,7 @@ function escapeValue(value) {
         .replace(/\t/g, "\\t")
         .replace(/\r/g, "\\r");
 
-    if (/[~`#$&*()\\|\[\]{};'<>/?!]/.test(escaped) || escaped !== value) {
+    if (/[~`#$&*()\\|\[\]{};'<>/?! ]/.test(escaped) || escaped !== value) {
         return `"${escaped.replace(/"/g, value)}"`;
     }
 
@@ -127,7 +127,7 @@ async function processTemplate(inputPath, env, token) {
     const processedLines = getEnvContents(inputPath, env);
     const content = processedLines.join('\n').trim();
     if (!content.length) {
-        console.warn(`[warn] Empty template at ${inputPath}, skpping`);
+        console.warn(`[warn] Empty template at ${inputPath}, skipping`);
         return '';
     }
     return op(['inject', '--session', token], processedLines.join('\n'));
