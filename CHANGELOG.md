@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.5.0 (2022-07-25)
+
+
+### Features
+
+* **parser:** look for templates in specified root folder ([5f99cd7](https://github.com/doctariDev/doctari-onepassword-tools/commit/5f99cd7e25f0afe2fc01dffad64001be0613a61d))
+
 ### 1.4.7 (2022-07-25)
 
 
