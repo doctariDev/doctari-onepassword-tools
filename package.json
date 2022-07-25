@@ -11,11 +11,11 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "bin": {
-    "load-secrets": "bin/load-secrets.js"
+    "load-secrets": "./bin/load-secrets.js"
   },
   "scripts": {
     "postinstall": "yarn install-op",
-    "install-op": "bin/op-install.sh",
+    "install-op": "./bin/op-install.sh",
     "release": "standard-version --tag-prefix --commit-all && git push --follow-tags"
   },
   "devDependencies": {
