@@ -6,6 +6,7 @@ const path = require("path");
 
 const SKIPPED_DIRS = ['node_modules'];
 const TEMPLATE_NAME = 'env.template.json'
+const KEYWORDS = ['_refs'];
 
 function op(args, input) {
     const config = input
@@ -50,7 +51,7 @@ function findTemplates(folder) {
                 results.push(...findTemplates(path.join(folder, child.name)));
             }
             if (child.name === TEMPLATE_NAME) {
-                results.push(path.normalize(path.join(folder, child.name)));
+                results.push(path.resolve(path.join(folder, child.name)));
             }
         }
         return results;
@@ -78,16 +79,13 @@ async function loadEnvironment(folder, environment, token) {
         fs.writeFileSync(outputPath, env, { encoding: 'utf-8' });
     }
 }
-
-async function processTemplate(inputPath, env, token) {
-    console.log(`[info] Processing template at ${inputPath} (${env})`);
+function getEnvContents(inputPath, env) {
     const template = JSON.parse(fs.readFileSync(inputPath, {encoding: 'utf8'}));
-    if (Object.keys(template).length < 1) {
-        console.warn(`[warn] Empty template at ${inputPath}, skipping`);
-        return '';
-    }
     const processedLines = [];
     for (const [key, value] of Object.entries(template)) {
+        if (KEYWORDS.includes(key)) {
+            continue;
+        }
         if (typeof value === 'string') {
             processedLines.push(`${key}=${envSubstitution(value)}`);
             continue;
@@ -96,6 +94,23 @@ async function processTemplate(inputPath, env, token) {
             throw new Error('Missing value for ${key}[${env}], please fix the template');
         }
         processedLines.push(`${key}=${value[env]}`);
+    }
+
+    if (Array.isArray(template['_refs'])) {
+        for (const ref of template['_refs']) {
+            const refPath = path.resolve(path.dirname(inputPath), ref);
+            processedLines.push('', ...getEnvContents(refPath, env));
+        }
+    }
+    return processedLines;
+}
+async function processTemplate(inputPath, env, token) {
+    console.log(`[info] Processing template at ${inputPath} (${env})`);
+    const processedLines = getEnvContents(inputPath, env);
+    const content = processedLines.join('\n').trim();
+    if (!content.length) {
+        console.warn(`[warn] Empty template at ${inputPath}, skpping`);
+        return '';
     }
     return op(['inject', '--session', token], processedLines.join('\n'));
 }
@@ -111,7 +126,7 @@ async function main() {
         throw new Error('Usage: load-secrets <path-to-template>');
     }
 
-    console.log(`[info] 1password-cli version: ${op(['--version'])}`);
+    console.log(`[info] 1password-cli version: ${op(['--version']).trim()}`);
     const token = process.env.OP_SESSION_TOKEN || op(['signin', '--raw']);
 
     await loadEnvironment(folder, env, token);
