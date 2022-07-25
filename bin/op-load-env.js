@@ -79,6 +79,21 @@ async function loadEnvironment(folder, environment, token) {
         fs.writeFileSync(outputPath, env, { encoding: 'utf-8' });
     }
 }
+
+function escapeValue(value) {
+    const escaped = value
+        .replace(/\n/g, "\\n")
+        .replace(/\t/g, "\\t")
+        .replace(/\r/g, "\\r");
+
+    if (/[~`#$&*()\\|\[\]{};'<>/?!]/.test(escaped) || escaped !== value) {
+        return `"${escaped.replace(/"/g, value)}"`;
+    }
+
+    return value;
+}
+
+
 function getEnvContents(inputPath, env) {
     const template = JSON.parse(fs.readFileSync(inputPath, {encoding: 'utf8'}));
     const processedLines = [];
@@ -87,7 +102,7 @@ function getEnvContents(inputPath, env) {
             continue;
         }
         if (typeof value === 'string') {
-            processedLines.push(`${key}=${envSubstitution(value)}`);
+            processedLines.push(`${key}=${escapeValue(envSubstitution(value))}`);
             continue;
         }
         if (!value[env]) {
@@ -99,9 +114,12 @@ function getEnvContents(inputPath, env) {
     if (Array.isArray(template['_refs'])) {
         for (const ref of template['_refs']) {
             const refPath = path.resolve(path.dirname(inputPath), ref);
-            processedLines.push('', ...getEnvContents(refPath, env));
+            processedLines.push(...getEnvContents(refPath, env));
         }
     }
+
+    processedLines.sort((a, b) => (a === b) ? 0 : (a < b ? -1 : 1));
+
     return processedLines;
 }
 async function processTemplate(inputPath, env, token) {
