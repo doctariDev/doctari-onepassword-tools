@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.7.0 (2022-07-25)
+
+
+### Features
+
+* **processor:** added shell escape, sorted output ([76f6dde](https://github.com/doctariDev/doctari-onepassword-tools/commit/76f6dde590289025d33d85ccce72fcf10fdc6531))
+
 ## 1.6.0 (2022-07-25)
 
 
