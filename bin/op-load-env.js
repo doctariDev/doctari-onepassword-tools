@@ -10,7 +10,7 @@ const KEYWORDS = ['_refs'];
 const ALLOWED_STAGES = ["dev", "staging", "production"];
 
 function runningInGithub() {
-    return process.env.OP_GITHUB_CI === "true";
+    return process.env.GITHUB_ACTIONS === "true";
 }
 
 function printingEnabled() {
@@ -175,7 +175,7 @@ function printEnv(content, secrets) {
     entries.sort((a, b) => (a[0] === b[0]) ? 0 : (a[0] < b[0] ? -1 : 1));
 
     runningInGithub()
-        ? console.log("::group::[info] Generated .env file")
+        ? console.log("::group::Generated .env file")
         : console.log("[info] Generated .env file\n-");
 
     for (const [k, v] of entries) {
