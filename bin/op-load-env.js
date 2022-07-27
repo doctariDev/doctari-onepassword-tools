@@ -161,12 +161,28 @@ async function processTemplate(inputPath, env, token) {
         'node', '-e', `(${envPrinter.toString()})('${prefix}');`
     ], null, getPrefixedEnvironment(content, prefix)));
 
+    if (process.env.OP_ENABLE_GITHUB_MASKING === "true") {
+        for (const value of Object.values(processedValues)) {
+            console.log(`::add-mask::${value}`);
+        }
+    }
+
     const output = [];
     for (const [key, value] of Object.entries({ ...content, ...processedValues})) {
         output.push(`${key}=${escapeValue(value)}`)
     }
 
     output.sort((a, b) => (a === b) ? 0 : (a < b ? -1 : 1));
+
+    if (process.env.OP_PRINT_ENVIRONMENT === "true") {
+        console.log('Loaded environment');
+        console.log('--------');
+        for (const [k, v] of Object.entries({ ...content, ...processedValues})) {
+            console.log(`${k}=${v}`);
+        }
+        console.log('--------');
+    }
+
     return output.join('\n');
 }
 
