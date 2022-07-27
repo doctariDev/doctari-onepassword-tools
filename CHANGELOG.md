@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.10.0 (2022-07-27)
+
+
+### Features
+
+* **processor:** added cyclic dependency detection ([2b61096](https://github.com/doctariDev/doctari-onepassword-tools/commit/2b61096390484a7507fb88b03d721a7ad6e12b59))
+
 ### 1.9.2 (2022-07-27)
 
 ### 1.9.1 (2022-07-27)
