@@ -8,6 +8,14 @@ const SKIPPED_DIRS = ['node_modules'];
 const TEMPLATE_NAME = 'env.template.json'
 const KEYWORDS = ['_refs'];
 
+function runningInGithub() {
+    return process.env.OP_GITHUB_CI === "true";
+}
+
+function printingEnabled() {
+    return process.env.OP_PRINT_ENVIRONMENT === "true";
+}
+
 function op(args, input, environment = null) {
     const config = input
         ? { stdio: 'pipe', input: Buffer.from(input) }
@@ -146,6 +154,38 @@ function getPrefixedEnvironment(obj, prefix) {
         }, {...process.env})
 }
 
+function customMasking(value) {
+    value = String(value);
+    if (value.length < 5) {
+        return '***';
+    }
+    const chars = (value.length > 6) ? 2: 1;
+    return [
+        value.slice(0, chars),
+        "*".repeat(Math.min(15, value.length - 2 * chars)),
+        value.slice(-chars),
+    ].join('');
+}
+
+function printEnv(content, secrets) {
+    if (!printingEnabled()) return;
+
+    runningInGithub()
+        ? console.log("::group::Generated .env file")
+        : console.log("Generated .env file\n-");
+
+    for (const [k, v] of Object.entries({...content, ...secrets})) {
+        const value = secrets.hasOwnProperty(k)
+            ? customMasking(v)
+            : v;
+        console.log(`${k} = ${value}`)
+    }
+
+    runningInGithub()
+        ? console.log("::endgroup::")
+        : console.log("-");
+}
+
 async function processTemplate(inputPath, env, token) {
     console.log(`[info] Processing template at ${inputPath} (${env})`);
 
@@ -161,7 +201,7 @@ async function processTemplate(inputPath, env, token) {
         'node', '-e', `(${envPrinter.toString()})('${prefix}');`
     ], null, getPrefixedEnvironment(content, prefix)));
 
-    if (process.env.OP_ENABLE_GITHUB_MASKING === "true") {
+    if (runningInGithub()) {
         for (const value of Object.values(processedValues)) {
             console.log(`::add-mask::${value}`);
         }
@@ -174,15 +214,7 @@ async function processTemplate(inputPath, env, token) {
 
     output.sort((a, b) => (a === b) ? 0 : (a < b ? -1 : 1));
 
-    if (process.env.OP_PRINT_ENVIRONMENT === "true") {
-        console.log('Loaded environment');
-        console.log('--------');
-        for (const [k, v] of Object.entries({ ...content, ...processedValues})) {
-            console.log(`${k}=${v}`);
-        }
-        console.log('--------');
-    }
-
+    printEnv(content, processedValues);
     return output.join('\n');
 }
 
