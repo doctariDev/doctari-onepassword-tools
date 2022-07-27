@@ -171,11 +171,14 @@ function customMasking(value) {
 function printEnv(content, secrets) {
     if (!printingEnabled()) return;
 
-    runningInGithub()
-        ? console.log("::group::Generated .env file")
-        : console.log("Generated .env file\n-");
+    const entries = Object.entries({...content, ...secrets});
+    entries.sort((a, b) => (a[0] === b[0]) ? 0 : (a[0] < b[0] ? -1 : 1));
 
-    for (const [k, v] of Object.entries({...content, ...secrets})) {
+    runningInGithub()
+        ? console.log("::group::[info] Generated .env file")
+        : console.log("[info] Generated .env file\n-");
+
+    for (const [k, v] of entries) {
         const value = secrets.hasOwnProperty(k)
             ? customMasking(v)
             : v;
