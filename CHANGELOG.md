@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.9.0 (2022-07-27)
+
+
+### Features
+
+* **processor:** added stage name enforcement ([bc896c2](https://github.com/doctariDev/doctari-onepassword-tools/commit/bc896c2c9908b6482ba9be363cd392b2930bbe5b))
+
 ### 1.8.1 (2022-07-27)
 
 ## 1.8.0 (2022-07-27)
