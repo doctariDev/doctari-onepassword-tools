@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.8.0 (2022-07-27)
+
+
+### Features
+
+* **processor:** added option for masking and printing env ([1e3db65](https://github.com/doctariDev/doctari-onepassword-tools/commit/1e3db65ec682fc091bf0fd600d86ca2f816ac0a0))
+
 ### 1.7.2 (2022-07-25)
 
 
