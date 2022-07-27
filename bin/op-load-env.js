@@ -7,6 +7,7 @@ const path = require("path");
 const SKIPPED_DIRS = ['node_modules'];
 const TEMPLATE_NAME = 'env.template.json'
 const KEYWORDS = ['_refs'];
+const ALLOWED_STAGES = ["dev", "staging", "production"];
 
 function runningInGithub() {
     return process.env.OP_GITHUB_CI === "true";
@@ -137,7 +138,7 @@ function getEnvContent(inputPath, env) {
     return result;
 }
 
-function envPrinter(prefix) {
+function envExporter(prefix) {
     const vars = Object.entries(process.env)
         .filter(([k]) => k.startsWith(prefix))
         .map(([k, v]) => ([k.slice(prefix.length), v]))
@@ -159,7 +160,7 @@ function customMasking(value) {
     if (value.length < 5) {
         return '***';
     }
-    const chars = (value.length > 6) ? 2: 1;
+    const chars = (value.length > 12) ? 3: 2;
     return [
         value.slice(0, chars),
         "*".repeat(Math.min(15, value.length - 2 * chars)),
@@ -198,7 +199,7 @@ async function processTemplate(inputPath, env, token) {
     const prefix = 'OP_INJECT_'
     const processedValues = JSON.parse(op([
         'run', '--no-masking', '--session', token, '--',
-        'node', '-e', `(${envPrinter.toString()})('${prefix}');`
+        'node', '-e', `(${envExporter.toString()})('${prefix}');`
     ], null, getPrefixedEnvironment(content, prefix)));
 
     if (runningInGithub()) {
@@ -221,7 +222,10 @@ async function processTemplate(inputPath, env, token) {
 async function main() {
     const env = process.env.STAGE;
     if (!env) {
-        throw new Error('no stage set, use export STAGE=<stage>');
+        throw new Error('[error] no stage set, use export STAGE=<stage>');
+    }
+    if (!ALLOWED_STAGES.includes(env)) {
+        throw new Error(`[error] STAGE must be one of ${ALLOWED_STAGES.join('|')}`)
     }
 
     const [folder] = process.argv.slice(2);
@@ -237,7 +241,7 @@ async function main() {
 
 main().then(
     () => {
-        console.error('Done')
+        console.error('[info] Done')
     },
     (e) => {
         console.error(e.message);
