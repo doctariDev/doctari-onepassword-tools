@@ -79,7 +79,7 @@ async function loadEnvironment(folder, environment, token) {
     const templates = findTemplates(folder);
 
     if (!templates.length) {
-        console.warn(`No templates found in folder ${folder}, make sure to name them env.template.json`);
+        console.warn(`[warn] No templates found in folder ${folder}, make sure to name them env.template.json`);
         return;
     }
 
@@ -107,7 +107,11 @@ function escapeValue(value) {
 }
 
 
-function getEnvContent(inputPath, env) {
+function getEnvContent(inputPath, env, alreadyProcessed = []) {
+    if (alreadyProcessed.includes(inputPath)) {
+        throw new Error(`Cyclic dependency detected:\n${inputPath}\n${alreadyProcessed.map((v) => `^ ${v}`).join('\n')}`);
+    }
+
     const template = JSON.parse(fs.readFileSync(inputPath, {encoding: 'utf8'}));
     let result = {};
 
@@ -116,7 +120,7 @@ function getEnvContent(inputPath, env) {
             const refPath = path.resolve(path.dirname(inputPath), ref);
             result = {
                 ...result,
-                ...getEnvContent(refPath, env),
+                ...getEnvContent(refPath, env, [inputPath, ...alreadyProcessed]),
             };
         }
     }
@@ -247,7 +251,7 @@ main().then(
         console.error('[info] Done')
     },
     (e) => {
-        console.error(e.message);
+        console.error(`[error] ${e.message}`);
         process.exit(1);
     }
 );
