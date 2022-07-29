@@ -5,7 +5,7 @@ const child_process = require("child_process");
 const path = require("path");
 
 const SKIPPED_DIRS = ['node_modules'];
-const TEMPLATE_NAME = 'env.template.json'
+const TEMPLATE_NAME = '.env.template.json'
 const KEYWORDS = ['_refs'];
 const ALLOWED_STAGES = ["dev", "staging", "production"];
 
@@ -79,7 +79,7 @@ async function loadEnvironment(folder, environment, token) {
     const templates = findTemplates(folder);
 
     if (!templates.length) {
-        console.warn(`[warn] No templates found in folder ${folder}, make sure to name them env.template.json`);
+        console.warn(`[warn] No templates found in folder ${folder}, make sure to name them ${TEMPLATE_NAME}`);
         return;
     }
 
