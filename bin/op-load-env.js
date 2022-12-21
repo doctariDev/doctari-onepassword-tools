@@ -186,7 +186,7 @@ function printEnv(content, secrets) {
         const value = secrets.hasOwnProperty(k)
             ? customMasking(v)
             : v;
-        console.log(`${k} = ${value}`)
+        console.log(`${k} = "${value}"`)
     }
 
     runningInGithub()
