@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.10.3 (2022-12-21)
+
+
+### Bug Fixes
+
+* escape env value in generated .env ([a89891a](https://github.com/doctariDev/doctari-onepassword-tools/commit/a89891a5e6dbd4943f871cbd78d2655be4aed6c0))
+
 ### 1.10.2 (2022-07-29)
 
 ### 1.10.1 (2022-07-27)
