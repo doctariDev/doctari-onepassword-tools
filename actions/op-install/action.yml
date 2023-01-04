@@ -24,5 +24,5 @@ runs:
         rm /tmp/op.zip
       shell: bash
     - id: set-output
-      run: echo "::set-output name=version::$(op --version)"
+      run: echo "version=$(op --version)" >> $GITHUB_OUTPUT
       shell: bash

@@ -29,6 +29,5 @@ runs:
           --secret-key "${{ inputs.secretKey }}"
         token="$(echo "${{ inputs.password }}" | op signin --raw)"
         echo "::add-mask::$token"
-        echo "::set-output name=token::$token"
+        echo "token=$token" >> $GITHUB_OUTPUT
       shell: bash
-
